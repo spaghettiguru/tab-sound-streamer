@@ -1,4 +1,4 @@
-const SINGALING_SERVER_URL = "ws://ec2-52-28-103-239.eu-central-1.compute.amazonaws.com:8080";
+const SINGALING_SERVER_URL = "http://46.101.192.232:8080";
 
 var capturedStream = null;
 var rtcPeerConnectionConf = {
@@ -28,18 +28,15 @@ chrome.runtime.onMessage.addListener(function(message) {
       				video: false
     			  };
 
-            var signalingChannel = new WebSocket(SINGALING_SERVER_URL);
+            var signalingChannel = io(SINGALING_SERVER_URL);
 
         		chrome.tabCapture.capture(captureOptions, function(stream) {
         			capturedStream = stream;
-              //var audioTracks = stream.getAudioTracks();
-        			//chrome.runtime.sendMessage(null, audioTracks);
-              var pc = new RTCPeerConnection(rtcPeerConnectionConf);
+              var pc = new webkitRTCPeerConnection(rtcPeerConnectionConf);
 
               pc.onicecandidate = function (evt) {
                 signalingChannel.send(JSON.stringify({ "candidate": evt.candidate }));
               };
-
 
               pc.addStream(stream);
 

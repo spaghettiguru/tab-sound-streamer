@@ -1,7 +1,6 @@
-var WebSocketServer = require("ws").Server,
-wss = new WebSocketServer({ port: 8080 });
-
-var channels = {};
+//var httpServer = require('http').createServer(requestHandler);
+var io = require('socket.io')(8080);
+//httpServer.listen(8080);
 
 function generateToken(length) {
   var charCodes = new Array(length);
@@ -12,10 +11,14 @@ function generateToken(length) {
   return String.fromCharCode.apply(String, charCodes);
 }
 
-wss.on('connection', function(ws) {
-        var channelId = generateToken(10);
-        ws.on('message', function(message) {
+//function requestHandler(request, response) {
+  //response.setHeaders({"Access-Control-Allow-Origin": "*"});
+  //response.send("connected!");
+//}
+
+io.on('connection', function(socket) {
+        socket.on('message', function(message) {
         	console.log('recieved: %s', message);
 		});
-		ws.send(channelId);
+		socket.send("you are connected!");
 });

@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Tab sound streamer",
+  "description": "This extension allows streaming tab's sound to the mobile device",
   "version": "1.0",
 
   "browser_action": {
@@ -12,10 +12,11 @@
   "permissions": [
     "activeTab",
     "https://ajax.googleapis.com/",
-    "tabCapture"
+    "tabCapture",
+    "storage"
   ],
     "background": {
     "page": "eventPage.html",
-    "persistent": false
+    "persistent": true
   }
 }

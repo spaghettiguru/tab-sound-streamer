@@ -45,10 +45,9 @@ chrome.browserAction.onClicked.addListener(function() {
 
 chrome.tabCapture.onStatusChanged.addListener(function(captureInfo) {
     console.log("tabCapture status changed to: [%s]", captureInfo.status);
-    chrome.runtime.sendMessage(null, captureInfo.status);
 });
 
-chrome.runtime.onMessage.addListener(function(message) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if (message == "togglecapture") {
             var tabQueryOptions;
 
@@ -66,7 +65,8 @@ chrome.runtime.onMessage.addListener(function(message) {
                 var signalingChannel = io(SINGALING_SERVER_URL);
 
                 chrome.tabCapture.capture(captureOptions, function(stream) {
-                    console.log("Tab capturing was started");
+                    sendResponse({"captureStatus": "active"});
+                    localStorage.setItem("isCapturing", true);
                     console.log(stream);
                     mediaStream = stream;
                     setupStreamTransfer(signalingChannel, stream);
@@ -74,6 +74,10 @@ chrome.runtime.onMessage.addListener(function(message) {
             } else {
                 mediaStream.getAudioTracks()[0].stop();
                 mediaStream = null;
+                localStorage.setItem("isCapturing", false);
+                sendResponse({"captureStatus": "stopped"});
             }
     }
+
+    return true;
 });
